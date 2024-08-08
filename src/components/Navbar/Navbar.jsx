@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  FaCartPlus,
+  FaUser,
+  FaCaretDown,
+  FaBars,
+  FaUserCircle,
+} from "react-icons/fa";
 import Logo from "../../assets/logoMain.png";
 import { IoMdSearch } from "react-icons/io";
-import { FaCartShopping, FaUser, FaCaretDown, FaBars } from "react-icons/fa6";
 import DarkMode from "./DarkMode";
 
 const Menu = [
@@ -19,23 +26,39 @@ const DropdownLinks = [
   { id: 3, name: "Serveware", link: "/servewares" },
   { id: 4, name: "Planters & Vases", link: "/planters&vases" },
   { id: 5, name: "Wooden Collection", link: "/woodenCollection" },
-  { id: 6, name: "Mercury Collection", link: "/mercuryCollection" }
+  { id: 6, name: "Mercury Collection", link: "/mercuryCollection" },
 ];
 
-const Navbar = ({ handleOrderPopup }) => {
+const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
+  const isLoggedIn = !!userInfo;
 
   const handleNavigation = (link) => {
     navigate(link);
-    setMenuOpen(false); // Close the menu if it is open
+    setMenuOpen(false);
+  };
+
+  const handleProfileClick = () => {
+    if (isLoggedIn) {
+      navigate("/profile");
+    } else {
+      navigate("/auth");
+    }
   };
 
   return (
     <div className="shadow-md bg-black dark:bg-black dark:text-white duration-200 relative z-40">
       {/* upper Navbar */}
-      <div className="bg-black py-2 flex items-center" style={{ height: '100px' }}>
-        <div className="container flex justify-between items-center relative" style={{ marginLeft: '10px' }}>
+      <div
+        className="bg-black py-2 flex items-center"
+        style={{ height: "100px" }}
+      >
+        <div
+          className="container flex justify-between items-center relative"
+          style={{ marginLeft: "10px" }}
+        >
           <div className="flex items-center">
             <a
               onClick={() => handleNavigation("/")}
@@ -46,8 +69,8 @@ const Navbar = ({ handleOrderPopup }) => {
                 alt="Logo"
                 className="logo-animation drop-shadow-lg"
                 style={{
-                  height: '100px',
-                  width: 'auto', /* Maintain aspect ratio */
+                  height: "100px",
+                  width: "auto",
                   animation: "pulse 2s infinite",
                   transition: "transform 0.3s ease",
                 }}
@@ -74,15 +97,19 @@ const Navbar = ({ handleOrderPopup }) => {
               <span className="group-hover:block hidden transition-all duration-200">
                 Order
               </span>
-              <FaCartShopping className="text-xl text-white drop-shadow-sm cursor-pointer" />
+              <FaCartPlus className="text-xl text-white drop-shadow-sm cursor-pointer" />
             </button>
 
-            {/* User Icon for Login/Signup */}
+            {/* User Icon for Login/Signup/Profile */}
             <button
-              onClick={() => handleNavigation("/auth")}
+              onClick={handleProfileClick}
               className="text-white transition-all duration-200 py-1 px-4 rounded-full flex items-center gap-3 group"
             >
-              <FaUser className="text-xl drop-shadow-sm cursor-pointer" />
+              {isLoggedIn ? (
+                <FaUserCircle className="text-xl drop-shadow-sm cursor-pointer" />
+              ) : (
+                <FaUser className="text-xl drop-shadow-sm cursor-pointer" />
+              )}
             </button>
 
             {/* Darkmode Switch */}
@@ -92,8 +119,12 @@ const Navbar = ({ handleOrderPopup }) => {
           </div>
         </div>
       </div>
+
       {/* lower Navbar */}
-      <div data-aos="zoom-in" className="bg-white flex justify-center p-2 sm:p-0">
+      <div
+        data-aos="zoom-in"
+        className="bg-white flex justify-center p-2 sm:p-0"
+      >
         <ul className="sm:flex hidden items-center gap-4">
           {Menu.map((data) => (
             <li key={data.id}>
@@ -110,7 +141,7 @@ const Navbar = ({ handleOrderPopup }) => {
           <li className="group relative cursor-pointer">
             <div
               className="flex items-center gap-[2px] py-2 text-black"
-              onClick={() => handleNavigation("/shop")} // Add this line to navigate to the Products page
+              onClick={() => handleNavigation("/shop")}
             >
               Shop All
               <FaCaretDown className="transition-all duration-200 group-hover:rotate-180" />
@@ -132,6 +163,7 @@ const Navbar = ({ handleOrderPopup }) => {
             </div>
           </li>
         </ul>
+
         {/* Menubar button for small screens */}
         <div className="sm:hidden flex items-center">
           <button
@@ -142,6 +174,7 @@ const Navbar = ({ handleOrderPopup }) => {
           </button>
         </div>
       </div>
+
       {/* Dropdown menu for small screens */}
       {menuOpen && (
         <div className="bg-white sm:hidden flex flex-col items-start p-4 shadow-md">
@@ -157,7 +190,10 @@ const Navbar = ({ handleOrderPopup }) => {
           ))}
           <div className="relative w-full">
             <div className="group">
-              <button className="flex items-center w-full py-2 text-black focus:outline-none" onClick={() => handleNavigation("/shop")}>
+              <button
+                className="flex items-center w-full py-2 text-black focus:outline-none"
+                onClick={() => handleNavigation("/shop")}
+              >
                 Shop All
                 <FaCaretDown className="ml-2" />
               </button>
@@ -177,7 +213,7 @@ const Navbar = ({ handleOrderPopup }) => {
           </div>
         </div>
       )}
-      {/* Add the keyframes for the animation */}
+
       <style jsx="true">{`
         @keyframes pulse {
           0% {
@@ -192,7 +228,7 @@ const Navbar = ({ handleOrderPopup }) => {
         }
 
         .logo-animation:hover {
-          transform: scale(1.1); /* Adjusted to fit the new logo size */
+          transform: scale(1.1);
         }
 
         .scale-x-100 {

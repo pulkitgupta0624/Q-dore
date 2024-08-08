@@ -1,0 +1,69 @@
+.profile-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+  }
+  
+  .profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-info {
+    margin: 20px 0;
+  }
+  
+  .profile-info h2 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .profile-info p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .profile-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .profile-options h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .profile-options button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profile-options button:hover {
+    background-color: #0056b3;
+  }
+  
+  .profile-options button:focus {
+    outline: none;
+  }
+  
+  .logout-button {
+    background-color: #dc3545; /* Bootstrap red color */
+  }
+  
+  .logout-button:hover {
+    background-color: #c82333;
+  }
+  

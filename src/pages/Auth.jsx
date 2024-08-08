@@ -1,14 +1,61 @@
-import React, { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Navbar from '../components/Navbar/Navbar.jsx';
-import Footer from '../components/Footer/Footer.jsx';
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../redux/slices/authSlice";
+import axios from "axios";
+import Navbar from "../components/Navbar/Navbar.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState(""); // Added username state
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const toggleSignUp = () => setIsSignUp(!isSignUp);
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const endpoint = isSignUp
+        ? "http://localhost:3000/api/users/register"
+        : "http://localhost:3000/api/users/login";
+      const { data } = await axios.post(
+        endpoint,
+        { username, email, password },
+        config
+      );
+
+      console.log("Received Token:", data.token); // Log the token
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        dispatch(setCredentials(data));
+        navigate("/");
+      } else {
+        console.error("Token not found in response");
+      }
+    } catch (error) {
+      console.error(error.response?.data?.message || error.message);
+    }
+  };
 
   return (
     <div>
@@ -16,12 +63,15 @@ const Auth = () => {
       <div className="flex items-center justify-center h-screen">
         <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-            {isSignUp ? 'Sign Up' : 'Sign In'}
+            {isSignUp ? "Sign Up" : "Sign In"}
           </h2>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {isSignUp && (
               <div>
-                <label className="block text-gray-700 dark:text-gray-200 mb-2" htmlFor="username">
+                <label
+                  className="block text-gray-700 dark:text-gray-200 mb-2"
+                  htmlFor="username"
+                >
                   Username
                 </label>
                 <input
@@ -29,12 +79,17 @@ const Auth = () => {
                   id="username"
                   className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
             )}
             <div>
-              <label className="block text-gray-700 dark:text-gray-200 mb-2" htmlFor="email">
+              <label
+                className="block text-gray-700 dark:text-gray-200 mb-2"
+                htmlFor="email"
+              >
                 Email
               </label>
               <input
@@ -42,19 +97,26 @@ const Auth = () => {
                 id="email"
                 className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div>
-              <label className="block text-gray-700 dark:text-gray-200 mb-2" htmlFor="password">
+              <label
+                className="block text-gray-700 dark:text-gray-200 mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
                 <button
@@ -74,22 +136,22 @@ const Auth = () => {
               type="submit"
               className="w-full py-2 px-4 bg-primary text-white rounded-md transition-transform transform hover:scale-105"
             >
-              {isSignUp ? 'Sign Up' : 'Sign In'}
+              {isSignUp ? "Sign Up" : "Sign In"}
             </button>
           </form>
           <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+            {isSignUp ? "Already have an account?" : "Don't have an account?"}
             <button
               type="button"
               onClick={toggleSignUp}
               className="text-primary font-semibold ml-1"
             >
-              {isSignUp ? 'Sign In' : 'Sign Up'}
+              {isSignUp ? "Sign In" : "Sign Up"}
             </button>
           </p>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
